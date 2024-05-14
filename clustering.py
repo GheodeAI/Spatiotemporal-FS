@@ -25,7 +25,7 @@ def filter_xarray(data, min_lat=-90, max_lat=90, min_lon=-180, max_lon=180, mont
     return filtered_dataset
 
 
-def perform_clustering(var, months, coord, numbe_of_clusters, norm, seasonal_soothing, first_year,last_year, first_clima,last_clima,resolution,path):
+def perform_clustering(var, months, coord, numbe_of_clusters, norm, seasonal_soothing, first_year,last_year, first_clima,last_clima,resolution,path_predictors,path_output):
 
     # Define geographical coordinates
 
@@ -56,9 +56,9 @@ def perform_clustering(var, months, coord, numbe_of_clusters, norm, seasonal_soo
         all_but_atlantic = False
 
     # Data extraction from .nc files
-    daily_data_train = xr.open_dataset(path+'data_daily_'+var+'_1950_2010.nc')
+    daily_data_train = xr.open_dataset(path_predictors+'data_daily_'+var+'_1950_2010.nc')
     
-    daily_data_test = xr.open_dataset(path+'data_daily_'+var+'_2011_2022.nc')
+    daily_data_test = xr.open_dataset(path_predictors+'data_daily_'+var+'_2011_2022.nc')
     
     # Define the variable to perform the clustering
     if var == 'sm1':    
@@ -278,6 +278,12 @@ def perform_clustering(var, months, coord, numbe_of_clusters, norm, seasonal_soo
     labels_dataframe['nodes_lat'] = np.array(nodes_list)[:,0]
     labels_dataframe['nodes_lon'] = np.array(nodes_list)[:,1]
     labels_dataframe['cluster'] = labels_dataframe['cluster']+1
+
+    # Save the data
+
+    centroids_dataframe.to_csv( path_output+ 'centroids'+var+coord+str(numbe_of_clusters)+'.csv')
+    clusters_av_dataframe.to_csv( path_output+ 'averages'+var+coord+str(numbe_of_clusters)+'.csv')
+    labels_dataframe.to_csv( path_output+ 'labels'+var+coord+str(numbe_of_clusters)+'.csv')
 
     return centroids,centroids_dataframe,clusters_av_dataframe,labels_dataframe
 
