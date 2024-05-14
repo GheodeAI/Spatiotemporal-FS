@@ -5,7 +5,7 @@ import xarray as xr
 def main(first_year_train, last_year_test, local_latitude, local_longitude, first_clima, last_clima, path_predictors, path_output):
 
     # Make a datarange from first to last year and create a dataframe with that index
-    date_range = pd.date_range(str(first_year_train), str(last_year_test+1), freq='D', closed='left')
+    date_range = pd.date_range(str(first_year_train), str(last_year_test+1), freq='D', inclusive='left')
 
 
     # Create a dataframe to store the data
