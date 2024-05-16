@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
-def main(first_year_train, last_year_test, local_latitude, local_longitude, first_clima, last_clima, path_predictors, path_output):
+def main(first_year_train,last_year_train,first_year_test, last_year_test, local_latitude, local_longitude, first_clima, last_clima, path_predictors, path_output):
 
     # Make a datarange from first to last year and create a dataframe with that index
     date_range = pd.date_range(str(first_year_train), str(last_year_test+1), freq='D', inclusive='left')
@@ -22,7 +22,7 @@ def main(first_year_train, last_year_test, local_latitude, local_longitude, firs
         else:
             variable = var
 
-        # Load the data and select local node
+        # Load the data and select local node.     #Filenames should be set according to the downloaded data
         daily_data_train = xr.open_dataset(path_predictors+'data_daily_'+var+'_1950_2010.nc')
         daily_data_test = xr.open_dataset(path_predictors+'data_daily_'+var+'_2011_2022.nc')
 
