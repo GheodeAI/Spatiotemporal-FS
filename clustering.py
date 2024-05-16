@@ -117,7 +117,7 @@ def perform_clustering(var, months, coord, numbe_of_clusters, norm, seasonal_soo
 
     # Apply a mask to the data to remove the ocean points in case of t2m or sm, and remove nan values
     if var == 't2m' or var == 'sm1':
-        mask = np.load('mask_ocean_europe.npy')
+        mask = np.load(path_output+'mask_ocean_europe.npy')
     else:
         mask = ~np.any(np.isnan(data_res), axis=1)
 
