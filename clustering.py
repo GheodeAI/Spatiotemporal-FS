@@ -258,7 +258,7 @@ def perform_clustering(var, months, coord, numbe_of_clusters, norm, seasonal_soo
     for i in range(len(centroids)):
         # cluster_data = data_cl_av_masked[cluster.labels==i]
         cluster_mask = cluster.labels==i
-        if var == 'sst' or var=='sic' or var=='sm1':
+        if var == 'sst' or var=='sic' or var=='sm1' or var=='t2m':
             data_cl_av_masked = data_cl_av.reshape(data_cl_av.shape[0], data_cl_av.shape[1]*data_cl_av.shape[2]).T[mask][cluster_mask]
             batch_size = 1000  
             cluster_average = calculate_weighted_average(data_cl_av_masked, weights[cluster_mask], batch_size)
