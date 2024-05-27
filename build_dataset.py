@@ -7,7 +7,7 @@ def check_consecutive_repeats(df,col):
         print('Consecutive values repeated found at',col)
         print(repeats[repeats].index)
 
-def build_dataset(local_variables, cluster_variables, index_variables, day_oy_year, path, first_year, last_year):
+def build_dataset(local_variables, cluster_variables, index_variables, day_oy_year, path, first_year, last_year,file_name):
     import pandas as pd
     import numpy as np
     import os
@@ -56,7 +56,7 @@ def build_dataset(local_variables, cluster_variables, index_variables, day_oy_ye
 
     # Save data in csv file
 
-    dataset.to_csv(path+'predictors_dataset.csv')
+    dataset.to_csv(path+file_name+'.csv')
     
 
     return dataset
