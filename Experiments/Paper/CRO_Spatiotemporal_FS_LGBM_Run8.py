@@ -19,7 +19,7 @@ import os
 File names to store the solutions provided by the algorithm
 """
 
-filename = 'Test_Paper_8'
+filename = 'Test_Paper_LGBM_8'
 path_output = './Results/Test_Paper_LGBM/'
 # Create directory
 if not os.path.exists(path_output):
@@ -133,7 +133,7 @@ class ml_prediction(AbsObjectiveFunc):
         from sklearn.metrics import f1_score, mean_absolute_error
         from lightgbm import LGBMClassifier
 
-        clf_LR = LGBMClassifier()
+        clf = LGBMClassifier()
 
 
         # Apply cross validation

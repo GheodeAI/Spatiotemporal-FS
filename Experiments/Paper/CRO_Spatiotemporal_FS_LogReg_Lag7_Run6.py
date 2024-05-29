@@ -19,8 +19,8 @@ import os
 File names to store the solutions provided by the algorithm
 """
 
-filename = 'Test_Paper_LGBM_2'
-path_output = './Results/Test_Paper_LGBM/'
+filename = 'Test_Paper_LogLeg_Lag7_6'
+path_output = './Results/Test_Paper_LogReg_Lag7/'
 # Create directory
 if not os.path.exists(path_output):
     os.makedirs(path_output)
@@ -72,7 +72,7 @@ class ml_prediction(AbsObjectiveFunc):
 
         # We set the limits of the vector (window size, time lags and variable selection)
         self.sup_lim = np.append(np.append(np.repeat(60, pred_dataframe.shape[1]),np.repeat(180, pred_dataframe.shape[1])),np.repeat(1, pred_dataframe.shape[1]))  # array where each component indicates the maximum value of the component of the vector
-        self.inf_lim = np.append(np.append(np.repeat(1, pred_dataframe.shape[1]),np.repeat(0, pred_dataframe.shape[1])),np.repeat(0, pred_dataframe.shape[1])) # array where each component indicates the minimum value of the component of the vector
+        self.inf_lim = np.append(np.append(np.repeat(1, pred_dataframe.shape[1]),np.repeat(7, pred_dataframe.shape[1])),np.repeat(0, pred_dataframe.shape[1])) # array where each component indicates the minimum value of the component of the vector
         # we call the constructor of the superclass with the size of the vector
         # and wether we want to maximize or minimize the function 
         super().__init__(self.size, self.opt, self.sup_lim, self.inf_lim)
@@ -131,9 +131,8 @@ class ml_prediction(AbsObjectiveFunc):
 
         # Train model
         from sklearn.metrics import f1_score, mean_absolute_error
-        from lightgbm import LGBMClassifier
-
-        clf = LGBMClassifier()
+        from sklearn.linear_model import LogisticRegression
+        clf = LogisticRegression()
 
 
         # Apply cross validation
