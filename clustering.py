@@ -100,10 +100,8 @@ def perform_clustering(var, months, coord, numbe_of_clusters, norm, seasonal_soo
     daily_data_train = daily_data_total.sel(time=slice(str(first_year_train)+'-01-01', str(int(last_year_train))+'-12-31'))
     if first_year_test != None:
         daily_data_test = daily_data_total.sel(time=slice(str(first_year_test)+'-01-01', str(int(last_year_test))+'-12-31'))
-
+    data_clima_time = daily_data_total.sel(time=slice(str(first_clima)+'-01-01', str(int(last_clima))+'-12-31'))
     daily_data_total.close()
-    data_clima_time = daily_data_train.sel(time=slice(str(first_clima)+'-01-01', str(int(last_clima))+'-12-31'))
-
     # Data preprocessing
     from clustering import filter_xarray
     # Data is filtered based on the geographical limits, months, resolution and years
@@ -289,6 +287,7 @@ def compute_ENSO(path_predictors,path_output,first_year,last_year, first_clima,l
     import xarray as xr
     daily_data_train = xr.open_dataset(path_predictors+'data_daily_'+var+'_1950_2010.nc')
     daily_data_test = xr.open_dataset(path_predictors+'data_daily_'+var+'_2011_2022.nc')
+    daily_data_total = xr.concat([daily_data_train, daily_data_test], dim='time')
 
     min_lat=-5
     max_lat=5
@@ -296,9 +295,9 @@ def compute_ENSO(path_predictors,path_output,first_year,last_year, first_clima,l
     max_lon=-120
 
     # Perform the cluster only on the train years
-    daily_data_train = daily_data_train.sel(time=slice(str(first_year)+'-01-01', str(int(last_year))+'-12-31'))
-    data_clima_time = daily_data_train.sel(time=slice(str(first_clima)+'-01-01', str(int(last_clima))+'-12-31'))
-
+    daily_data_train = daily_data_total.sel(time=slice(str(first_year)+'-01-01', str(int(last_year))+'-12-31'))
+    data_clima_time = daily_data_total.sel(time=slice(str(first_clima)+'-01-01', str(int(last_clima))+'-12-31'))
+    daily_data_total.close()
 
     variable = var  
     # Data preprocessing
@@ -307,13 +306,13 @@ def compute_ENSO(path_predictors,path_output,first_year,last_year, first_clima,l
     # Data is filtered based on the geographical limits, months, resolution and years
     data_filtered = filter_xarray(daily_data_train, min_lat=min_lat, max_lat=max_lat, min_lon=min_lon, max_lon=max_lon,resolution=resolution)
     data_filtered_clima = filter_xarray(data_clima_time, min_lat=min_lat, max_lat=max_lat, min_lon=min_lon, max_lon=max_lon,resolution=resolution)
-    data_filtered_test = filter_xarray(daily_data_test, min_lat=min_lat, max_lat=max_lat, min_lon=min_lon, max_lon=max_lon,resolution=resolution)
+    # data_filtered_test = filter_xarray(daily_data_test, min_lat=min_lat, max_lat=max_lat, min_lon=min_lon, max_lon=max_lon,resolution=resolution)
 
     # Perform the seasonal soothing
     
     from clustering import seasonal_smoothing
     data_filtered = seasonal_smoothing(data_filtered_clima,variable,data_filtered)
-    data_filtered_test = seasonal_smoothing(data_filtered_clima,variable,data_filtered_test)
+    # data_filtered_test = seasonal_smoothing(data_filtered_clima,variable,data_filtered_test)
 
             
     data_filtered_clima.close()
@@ -321,7 +320,8 @@ def compute_ENSO(path_predictors,path_output,first_year,last_year, first_clima,l
 
     # Merge the train and test data
 
-    data_filtered_total = xr.concat([data_filtered, data_filtered_test], dim='time')
+    # data_filtered_total = xr.concat([data_filtered, data_filtered_test], dim='time')
+    data_filtered_total = data_filtered
 
     # Compute ENSO index
 
@@ -353,13 +353,13 @@ def compute_IOD(path_predictors,path_output,first_year,last_year, first_clima,la
     import xarray as xr
     daily_data_train = xr.open_dataset(path_predictors+'data_daily_'+var+'_1950_2010.nc')
     daily_data_test = xr.open_dataset(path_predictors+'data_daily_'+var+'_2011_2022.nc')
-    
+    daily_data_total = xr.concat([daily_data_train, daily_data_test], dim='time')
 
 
     # Perform the cluster only on the train years
-    daily_data_train = daily_data_train.sel(time=slice(str(first_year)+'-01-01', str(int(last_year))+'-12-31'))
-    data_clima_time = daily_data_train.sel(time=slice(str(first_clima)+'-01-01', str(int(last_clima))+'-12-31'))
-
+    daily_data_train = daily_data_total.sel(time=slice(str(first_year)+'-01-01', str(int(last_year))+'-12-31'))
+    data_clima_time = daily_data_total.sel(time=slice(str(first_clima)+'-01-01', str(int(last_clima))+'-12-31'))
+    daily_data_total.close()
 
     variable = var  
     # Data preprocessing
@@ -368,20 +368,20 @@ def compute_IOD(path_predictors,path_output,first_year,last_year, first_clima,la
     # Data is filtered based on the geographical limits, months, resolution and years
     data_filtered = filter_xarray(daily_data_train, min_lat=min_lat, max_lat=max_lat, min_lon=min_lon, max_lon=max_lon,resolution=resolution)
     data_filtered_clima = filter_xarray(data_clima_time, min_lat=min_lat, max_lat=max_lat, min_lon=min_lon, max_lon=max_lon,resolution=resolution)
-    data_filtered_test = filter_xarray(daily_data_test, min_lat=min_lat, max_lat=max_lat, min_lon=min_lon, max_lon=max_lon,resolution=resolution)
+    # data_filtered_test = filter_xarray(daily_data_test, min_lat=min_lat, max_lat=max_lat, min_lon=min_lon, max_lon=max_lon,resolution=resolution)
 
     # Perform the seasonal soothing
     
     from clustering import seasonal_smoothing
     data_filtered = seasonal_smoothing(data_filtered_clima,variable,data_filtered)
-    data_filtered_test = seasonal_smoothing(data_filtered_clima,variable,data_filtered_test)
+    # data_filtered_test = seasonal_smoothing(data_filtered_clima,variable,data_filtered_test)
 
             
     data_filtered_clima.close()
     # Merge the train and test data
 
-    data_filtered_total_1 = xr.concat([data_filtered, data_filtered_test], dim='time')
-
+    # data_filtered_total_1 = xr.concat([data_filtered, data_filtered_test], dim='time')
+    data_filtered_total_1 = data_filtered
     # Compute area averaged SST anomaly in the sotheastern tropical Indian Ocean
 
     min_lat=-10
