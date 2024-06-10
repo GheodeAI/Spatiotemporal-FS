@@ -49,7 +49,7 @@ def seasonal_smoothing(data_filtered_clima,variable,data_filtered):
 
     return data_filtered
 
-def perform_clustering(var, months, coord, numbe_of_clusters, norm, seasonal_soothing, first_year,last_year, first_clima,last_clima,resolution,path_predictors,path_output):
+def perform_clustering(var, months, coord, numbe_of_clusters, norm, seasonal_soothing, first_year_train,last_year_train,first_year_test,last_year_test, first_clima,last_clima,resolution,path_predictors,path_output):
 
     # Define geographical coordinates
 
@@ -83,7 +83,7 @@ def perform_clustering(var, months, coord, numbe_of_clusters, norm, seasonal_soo
     daily_data_train = xr.open_dataset(path_predictors+'data_daily_'+var+'_1950_2010.nc')
     
     daily_data_test = xr.open_dataset(path_predictors+'data_daily_'+var+'_2011_2022.nc')
-    daily_data_train = xr.concat([daily_data_train, daily_data_test], dim='time')
+    daily_data_total = xr.concat([daily_data_train, daily_data_test], dim='time')
     # Define the variable to perform the clustering
     if var == 'sm1':    
         variable = 'swvl1'
@@ -97,7 +97,11 @@ def perform_clustering(var, months, coord, numbe_of_clusters, norm, seasonal_soo
         variable = var  
 
     # Perform the cluster only on the train years
-    daily_data_train = daily_data_train.sel(time=slice(str(first_year)+'-01-01', str(int(last_year))+'-12-31'))
+    daily_data_train = daily_data_total.sel(time=slice(str(first_year_train)+'-01-01', str(int(last_year_train))+'-12-31'))
+    if first_year_test != None:
+        daily_data_test = daily_data_total.sel(time=slice(str(first_year_test)+'-01-01', str(int(last_year_test))+'-12-31'))
+
+    daily_data_total.close()
     data_clima_time = daily_data_train.sel(time=slice(str(first_clima)+'-01-01', str(int(last_clima))+'-12-31'))
 
     # Data preprocessing
@@ -187,18 +191,23 @@ def perform_clustering(var, months, coord, numbe_of_clusters, norm, seasonal_soo
     lons_c = [np.array(nodes_list)[centroids][i][1] for i in range(len(np.array(nodes_list)[centroids]))]
     lats_c = [np.array(nodes_list)[centroids][i][0] for i in range(len(np.array(nodes_list)[centroids]))]
 
-    # Once the cluster are created, read and process the test data
+    if first_year_test != None:
 
-    data_filtered_test = filter_xarray(daily_data_test, min_lat=min_lat, max_lat=max_lat, min_lon=min_lon, max_lon=max_lon, months=months,resolution=resolution)
+        # Once the cluster are created, read and process the test data
 
-    # Apply seasonal forecasting
+        data_filtered_test = filter_xarray(daily_data_test, min_lat=min_lat, max_lat=max_lat, min_lon=min_lon, max_lon=max_lon, months=months,resolution=resolution)
 
-    if seasonal_soothing == True:
-        data_filtered_test = seasonal_smoothing(data_filtered_clima,variable,data_filtered_test)
+        # Apply seasonal forecasting
+
+        if seasonal_soothing == True:
+            data_filtered_test = seasonal_smoothing(data_filtered_clima,variable,data_filtered_test)
         
     # Merge the train and test data
 
-    data_filtered_total = xr.concat([data_filtered, data_filtered_test], dim='time')
+    if first_year_test != None:
+        data_filtered_total = xr.concat([data_filtered, data_filtered_test], dim='time')
+    else:
+        data_filtered_total = data_filtered
     data_filtered.close()
     data_filtered_test.close()
 
