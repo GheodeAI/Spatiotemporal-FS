@@ -204,10 +204,11 @@ def perform_clustering(var, months, coord, numbe_of_clusters, norm, seasonal_soo
 
     if first_year_test != None:
         data_filtered_total = xr.concat([data_filtered, data_filtered_test], dim='time')
+        data_filtered_test.close()
     else:
         data_filtered_total = data_filtered
     data_filtered.close()
-    data_filtered_test.close()
+
 
     # Create a dataframe with the centroids timeseries
 
