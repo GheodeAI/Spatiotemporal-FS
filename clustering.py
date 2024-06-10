@@ -83,7 +83,7 @@ def perform_clustering(var, months, coord, numbe_of_clusters, norm, seasonal_soo
     daily_data_train = xr.open_dataset(path_predictors+'data_daily_'+var+'_1950_2010.nc')
     
     daily_data_test = xr.open_dataset(path_predictors+'data_daily_'+var+'_2011_2022.nc')
-    
+    daily_data_train = xr.concat([daily_data_train, daily_data_test], dim='time')
     # Define the variable to perform the clustering
     if var == 'sm1':    
         variable = 'swvl1'
