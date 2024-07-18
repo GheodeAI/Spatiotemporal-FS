@@ -1,1 +1,1 @@
-from .fitness_function import MLprediction
+from .fitness_function import MLPrediction

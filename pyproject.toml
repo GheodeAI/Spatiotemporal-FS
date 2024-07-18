@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spatiotemporal_FS_HW"
+version = "0.0.1"
+authors = []
+description = ""
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = []
+license = {text = "LICENSE"}
+dependencies = [
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "scipy",
+    "scikit-learn",
+]
+
