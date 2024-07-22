@@ -81,7 +81,8 @@ def perform_clustering(var, months, coord, numbe_of_clusters, norm, seasonal_soo
 
     # Data extraction from .nc files
     daily_data_train = xr.open_dataset(path_predictors+'data_daily_'+var+'_1950_2010.nc')
-    
+    if first_year_train>1950:
+        daily_data_train = daily_data_total.sel(time=slice(str(first_year_train)+'-01-01', '2010-12-31'))
     daily_data_test = xr.open_dataset(path_predictors+'data_daily_'+var+'_2011_2022.nc')
     daily_data_total = xr.concat([daily_data_train, daily_data_test], dim='time')
     # Define the variable to perform the clustering
